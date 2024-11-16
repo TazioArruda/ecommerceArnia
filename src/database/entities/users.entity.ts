@@ -1,35 +1,54 @@
-import { RoleEnum } from "src/enums/role.enum";
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from "typeorm";
-
-@Entity('users') // Nome da tabela
-export class Users {
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    CreateDateColumn,
+    UpdateDateColumn,
+    DeleteDateColumn,
+    ManyToMany,
+    JoinTable,
+  } from "typeorm";
+  import { Jewels } from "./jewels.entity"; // Importa a entidade Jewels
+  import { Products } from "./products.entity"; // Importa a entidade Products
+  import { RoleEnum } from "src/enums/role.enum";
+  
+  @Entity('users') // Nome da tabela
+  export class Users {
     @PrimaryGeneratedColumn('uuid') // Define como chave primária com UUID
     uniqueId: string;
-
-    @Column({ type: 'varchar', length: 64, nullable: false }) // Campo obrigatório com limite de 64 caracteres
+  
+    @Column({ type: 'varchar', length: 64 }) // Nome, NOT NULL
     name: string;
-
-    @Column({ type: 'varchar', length: 64, unique: true }) // Campo único e obrigatório
+  
+    @Column({ type: 'varchar', length: 64, unique: true }) // Email único e NOT NULL
     email: string;
-
-    @Column({ type: 'varchar', length: 64}) // Campo obrigatório
+  
+    @Column({ type: 'varchar', length: 64 }) // Senha, NOT NULL
     password: string;
-
-    @Column({ type: 'enum', enum: RoleEnum}) // Campo ENUM obrigatório
+  
+    @Column({ type: 'enum', enum: RoleEnum }) // Papel do usuário, ENUM, NOT NULL
     role: RoleEnum;
-
-    @Column({ type: 'boolean', default: true }) // Campo booleano com valor padrão
+  
+    @Column({ type: 'boolean', default: true }) // Status de ativo
     isActive: boolean;
-
-    @Column({ type: 'int', default: 0 }) // Campo inteiro com valor padrão
-    jewels: number;
-
-    @CreateDateColumn({ type: 'date', default: () => 'CURRENT_DATE' }) // Data de criação padrão para o dia atual
+  
+    // Relacionamento com Jewels
+    @ManyToMany(() => Jewels, (jewel) => jewel.users, { cascade: true }) // Relacionamento bidirecional com Jewels
+    @JoinTable({ name: 'user_jewels' }) // Define a tabela intermediária
+    jewels: Jewels[];
+  
+    // Relacionamento com Products
+    @ManyToMany(() => Products, (product) => product.users, { cascade: true }) // Relacionamento bidirecional com Products
+    @JoinTable({ name: 'user_products' }) // Define a tabela intermediária
+    products: Products[];
+  
+    @CreateDateColumn({ type: 'date', default: () => 'CURRENT_DATE' }) // Data de criação
     createdAt: Date;
-
-    @UpdateDateColumn({ type: 'date', default: () => 'CURRENT_DATE' }) // Data de atualização padrão para o dia atual
+  
+    @UpdateDateColumn({ type: 'date', default: () => 'CURRENT_DATE' }) // Data de atualização
     updatedAt: Date;
-
-    @DeleteDateColumn({ type: 'date', nullable: true }) // Data de exclusão lógica
+  
+    @DeleteDateColumn({ type: 'date' }) // Data de exclusão lógica
     deletedAt: Date | null;
-}
+  }
+  
