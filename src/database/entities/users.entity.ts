@@ -7,10 +7,14 @@ import {
     DeleteDateColumn,
     ManyToMany,
     JoinTable,
+    BeforeInsert,
   } from "typeorm";
+  import * as bcrypt from 'bcrypt'
+
   import { Jewels } from "./jewels.entity"; // Importa a entidade Jewels
   import { Products } from "./products.entity"; // Importa a entidade Products
   import { RoleEnum } from "src/enums/role.enum";
+import { BadGatewayException } from "@nestjs/common";
   
   @Entity('users') // Nome da tabela
   export class Users {
@@ -50,5 +54,17 @@ import {
   
     @DeleteDateColumn({ type: 'date' }) // Data de exclusão lógica
     deletedAt: Date | null;
+
+    @BeforeInsert()
+        async hashPassword(){
+            try{
+
+                this.password = await bcrypt.hash(this.password,10);
+
+            }catch (error){
+                console.error(error)
+                throw new BadGatewayException("Error  trying to hash password")
+            }
+        }
   }
   
