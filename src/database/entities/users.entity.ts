@@ -27,7 +27,7 @@ import { BadGatewayException } from "@nestjs/common";
     @Column({ type: 'varchar', length: 64, unique: true }) // Email único e NOT NULL
     email: string;
   
-    @Column({ type: 'varchar', length: 64 }) // Senha, NOT NULL
+    @Column({ type: 'varchar', length: 64, select: false }) // Senha, NOT NULL
     password: string;
   
     @Column({ type: 'enum', enum: RoleEnum }) // Papel do usuário, ENUM, NOT NULL

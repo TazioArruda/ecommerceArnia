@@ -1,0 +1,86 @@
+import { HttpException, Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Users } from 'src/database/entities';
+import { Repository } from 'typeorm';
+import { UpdateUserDto } from './dto/update-user.dto';
+
+@Injectable()
+export class UsersService {
+
+  constructor(
+    @InjectRepository(Users)
+    private usersRepository: Repository<Users>
+  ) {}
+
+  // Buscar todos os usuários (somente admin)
+  async findAll() {
+    try {
+      return await this.usersRepository.find({
+        where: { deletedAt: null }, // Exclui usuários deletados logicamente
+      });
+    } catch (error) {
+      throw new HttpException(error.message, error.statusCode);
+    }
+  }
+
+  // Buscar um usuário pelo id (somente admin)
+  async findOne(id: string): Promise<Users> {
+    const user = await this.usersRepository.findOne({
+      where: { uniqueId: id, deletedAt: null }, // Exclui usuários deletados logicamente
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with ID "${id}" not found.`);
+    }
+
+    return user;
+  }
+
+  // Atualizar o usuário (self update ou admin)
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<Users> {
+    // Verifica se o usuário existe
+    const user = await this.findOne(id);
+
+    if (!user) {
+      throw new NotFoundException(`User with ID "${id}" not found.`);
+    }
+
+    // Verifica se a atualização é para o próprio usuário ou admin
+    if (user.uniqueId !== id) {
+      throw new ForbiddenException('You can only update your own profile.');
+    }
+
+    // Atualiza os dados do usuário
+    Object.assign(user, updateUserDto);
+    return this.usersRepository.save(user);
+  }
+
+  // Soft delete (exclusão lógica) do usuário (self delete ou admin)
+  async softDelete(id: string): Promise<string> {
+    const user = await this.findOne(id);
+
+    if (!user) {
+      throw new NotFoundException(`User with ID "${id}" not found.`);
+    }
+
+    // Lógica de soft delete (apenas define o campo "deletedAt")
+    user.deletedAt = new Date();
+    await this.usersRepository.save(user);
+
+    return `User with ID "${id}" deleted successfully.`;
+  }
+
+  // Retornar o perfil do usuário (todos os dados exceto a senha)
+  async profile(id: string): Promise<Users> {
+    const user = await this.findOne(id);
+
+    if (!user) {
+      throw new NotFoundException(`User with ID "${id}" not found.`);
+    }
+
+    // Remover a senha antes de retornar
+    delete user.password;
+
+    return user;
+  }
+}
