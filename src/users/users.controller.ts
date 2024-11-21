@@ -41,8 +41,15 @@ export class UsersController {
   }
 
   // Rota para retornar o perfil do usuário (todos os dados exceto a senha)
-  @Get('profile')
-  async profile(@Param('id') id: string): Promise<Users> {
-    return this.usersService.profile(id);
-  }
+  @Get('profile/:id')
+async profile(@Param('id') id: string): Promise<any> {
+  const { user, jewelCount, productCount } = await this.usersService.profile(id);
+
+  return {
+    message: `Profile data for user with ID: ${id}`,
+    user,
+    jewelCount,
+    productCount,
+  };
+}
 }

@@ -15,9 +15,9 @@ import {
       private readonly configService: ConfigService,
     ) {}
   
-    /**
-     * Método principal que verifica se o token JWT é válido.
-     */
+  
+     //Método principal que verifica se o token JWT é válido.
+     
     async canActivate(context: ExecutionContext): Promise<boolean> {
       const request = context.switchToHttp().getRequest<Request>();
       const token = this.extractTokenFromHeader(request);

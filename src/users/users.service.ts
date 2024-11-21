@@ -71,16 +71,30 @@ export class UsersService {
   }
 
   // Retornar o perfil do usuário (todos os dados exceto a senha)
-  async profile(id: string): Promise<Users> {
-    const user = await this.findOne(id);
-
+  async profile(id: string): Promise<{ user: Users; jewelCount: number; productCount: number }> {
+    // Buscar o usuário com os relacionamentos necessários
+    const user = await this.usersRepository.findOne({
+      where: { uniqueId: id },
+      relations: ['jewels', 'products'], // Relacionamentos para jewels e products
+    });
+  
+    // Verificar se o usuário foi encontrado
     if (!user) {
       throw new NotFoundException(`User with ID "${id}" not found.`);
     }
-
-    // Remover a senha antes de retornar
+  
+    // Remover a senha do objeto do usuário
     delete user.password;
-
-    return user;
+  
+    // Calcular as contagens de jewels e products
+    const jewelCount = user.jewels ? user.jewels.length : 0;
+    const productCount = user.products ? user.products.length : 0;
+  
+    return {
+      user,
+      jewelCount,
+      productCount,
+    };
   }
+  
 }
