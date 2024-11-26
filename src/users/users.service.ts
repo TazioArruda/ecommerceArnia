@@ -37,23 +37,24 @@ export class UsersService {
   }
 
   // Atualizar o usuário (self update ou admin)
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<Users> {
+  async update(uniqueId: string, updateUserDto: UpdateUserDto): Promise<Users> {
     // Verifica se o usuário existe
-    const user = await this.findOne(id);
-
+    const user = await this.findOne(uniqueId);
+  
     if (!user) {
-      throw new NotFoundException(`User with ID "${id}" not found.`);
+      throw new NotFoundException(`User with ID "${uniqueId}" not found.`);
     }
-
-    // Verifica se a atualização é para o próprio usuário ou admin
-    if (user.uniqueId !== id) {
-      throw new ForbiddenException('You can only update your own profile.');
-    }
-
-    // Atualiza os dados do usuário
-    Object.assign(user, updateUserDto);
+  
+    // Atualiza apenas os campos permitidos
+    const { name, isActive } = updateUserDto;
+  
+    if (name) user.name = name;
+    if (isActive !== undefined) user.isActive = isActive; // Atualiza isActive
+  
     return this.usersRepository.save(user);
   }
+  
+
 
   // Soft delete (exclusão lógica) do usuário (self delete ou admin)
   async softDelete(id: string): Promise<string> {

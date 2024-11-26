@@ -11,6 +11,7 @@ import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { RoleEnum } from 'src/enums/role.enum';
+import { RedeemProductDto } from './dto/redeemProduct.dto';
 
 
 @Controller('products')
@@ -42,6 +43,11 @@ export class ProductsController {
   @Roles(RoleEnum.admin) // Somente administradores podem criar produtos
   async create(@Body() createProductDto: CreateProductDto): Promise<Products> {
     return this.productsService.create(createProductDto);
+  }
+  
+  @Post('redeem')
+  async redeemProduct(@Body() redeemProductDto: RedeemProductDto): Promise<string> {
+    return this.productsService.redeemProduct(redeemProductDto);
   }
 
   @Patch(':uniqueId')

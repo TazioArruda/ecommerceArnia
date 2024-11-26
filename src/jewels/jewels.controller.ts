@@ -35,7 +35,7 @@ export class JewelsController {
   }
 
   // Atribuir uma jóia a um usuário (somente admin)
-  @Post(':id/assign')
+  @Post('assign/:id')
     @Roles(RoleEnum.admin)
     async assignJewelToUser(
       @Param('id') jewelId: string,

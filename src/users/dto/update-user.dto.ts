@@ -1,11 +1,13 @@
-import { IsString, IsOptional, IsEmail } from 'class-validator';
+import { Transform } from 'class-transformer';
+import { IsString, IsOptional, IsBoolean } from 'class-validator';
 
 export class UpdateUserDto {
   @IsString()
   @IsOptional()
   name?: string;
 
-  @IsEmail()
+  @IsBoolean()
+  @Transform(({ value }) => value === 'true' || value === true) // Transforma para booleano
   @IsOptional()
-  email?: string;
+  isActive?: boolean; // Renomeado para isActive
 }

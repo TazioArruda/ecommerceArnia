@@ -8,7 +8,7 @@ import { JewelsModule } from './jewels/jewels.module';
 
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal:true}), DatabaseModule, AuthModule, UsersModule, ProductsModule, JewelsModule],
+  imports: [ConfigModule.forRoot({ isGlobal:true}), DatabaseModule, AuthModule, UsersModule, ProductsModule, JewelsModule,],
   
 })
 export class AppModule {}
