@@ -13,7 +13,7 @@ export class CreateJewelDto {
 //ele será convertido para um valor booleano antes de ser validado
 @IsBoolean()
 @Transform(({ value }) => value === 'true' || value === true) // Transforma para booleano
-isAvailable?: boolean
+isAvailable: boolean
 
   @IsString()
   @IsNotEmpty()

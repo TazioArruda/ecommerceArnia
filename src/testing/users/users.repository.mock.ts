@@ -4,7 +4,7 @@ import { Users } from "../../database/entities";
 
 
 export const UsersServiceMock = {
-    findAll: jest.fn(),
+    findAll: jest.fn().mockResolvedValue([]),
     findOne: jest.fn(),
     update: jest.fn(),
     softDelete: jest.fn(),

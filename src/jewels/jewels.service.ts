@@ -1,8 +1,8 @@
 // src/jewels/jewels.service.ts
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Jewels } from 'src/database/entities/jewels.entity';
-import { Users } from 'src/database/entities/users.entity';
+import { Jewels } from '../database/entities/jewels.entity';
+import { Users } from '../database/entities/users.entity';
 import { Repository } from 'typeorm';
 import { CreateJewelDto } from './dto/createJewels.dto';
 import { UpdateJewelDto } from './dto/updateJewels.dto';

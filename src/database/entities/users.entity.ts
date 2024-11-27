@@ -13,7 +13,7 @@ import {
 
   import { Jewels } from "./jewels.entity"; // Importa a entidade Jewels
   import { Products } from "./products.entity"; // Importa a entidade Products
-  import { RoleEnum } from "src/enums/role.enum";
+  import { RoleEnum } from "../../enums/role.enum";
 import { BadGatewayException } from "@nestjs/common";
   
   @Entity('users') // Nome da tabela
