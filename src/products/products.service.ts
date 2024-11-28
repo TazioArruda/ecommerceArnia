@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateProductDto } from './dto/createProduct.dto';
 import { UpdateProductDto } from './dto/updateProduct.dto';
-import { Products } from 'src/database/entities/products.entity';
-import { Users } from 'src/database/entities/users.entity'; // Importa a entidade Users
+import { Products } from '../database/entities/products.entity';
+import { Users } from '../database/entities/users.entity'; // Importa a entidade Users
 
 import { RedeemProductDto } from './dto/redeemProduct.dto';
 

@@ -90,28 +90,49 @@ describe('JewelsService', () => {
       const mockUser = { uniqueId: 'user-id' };
   
       JewelsRepositoryMock.findOne.mockResolvedValueOnce(mockJewel); // Jewel found
+      UsersRepositoryMock.findOne.mockResolvedValueOnce(mockUser);  // Usuário encontrado
   
       const result = await service.assignJewelToUser('jewel-id', 'user-id');
-      expect(result).toEqual({ message: `Jewel with ID jewel-id assigned to user with ID user-id` });
-      expect(JewelsRepositoryMock.save).toHaveBeenCalledWith({
-        ...mockJewel,
-        users: [mockUser],
-      });
-    });
-    
-  
-    it('should throw NotFoundException if jewel is not found', async () => {
-      JewelsRepositoryMock.findOne.mockResolvedValue(null);
-  
-      await expect(service.assignJewelToUser('jewel-id', 'user-id')).rejects.toThrow(NotFoundException);
-    });
-  
-    it('should throw ForbiddenException if jewel is not available', async () => {
-      const mockJewel = { uniqueId: 'jewel-id', isAvailable: false, users: [] };
-      JewelsRepositoryMock.findOne.mockResolvedValue(mockJewel);
-  
-      await expect(service.assignJewelToUser('jewel-id', 'user-id')).rejects.toThrow(ForbiddenException);
-    });
+  expect(result).toEqual({ message: `Jewel with ID jewel-id assigned to user with ID user-id` });
+  expect(JewelsRepositoryMock.save).toHaveBeenCalledWith({
+    ...mockJewel,
+    users: [mockUser],
+  });
+});
+
+it('should throw NotFoundException if jewel is not found', async () => {
+  JewelsRepositoryMock.findOne.mockResolvedValue(null); // Jewel não encontrada
+
+  await expect(service.assignJewelToUser('jewel-id', 'user-id')).rejects.toThrow(NotFoundException);
+  expect(JewelsRepositoryMock.findOne).toHaveBeenCalledWith({
+    where: { uniqueId: 'jewel-id' },
+    relations: ['users'],
+  });
+});
+
+it('should throw NotFoundException if user is not found', async () => {
+  const mockJewel = { uniqueId: 'jewel-id', isAvailable: true, users: [] };
+
+  JewelsRepositoryMock.findOne.mockResolvedValue(mockJewel); // Jewel encontrada
+  UsersRepositoryMock.findOne.mockResolvedValue(null); // Usuário não encontrado
+
+  await expect(service.assignJewelToUser('jewel-id', 'user-id')).rejects.toThrow(NotFoundException);
+  expect(UsersRepositoryMock.findOne).toHaveBeenCalledWith({ where: { uniqueId: 'user-id' } });
+});
+
+it('should throw ForbiddenException if jewel is not available', async () => {
+  const mockJewel = { uniqueId: 'jewel-id', isAvailable: false, users: [] };
+  const mockUser = { uniqueId: 'user-id' };
+
+  JewelsRepositoryMock.findOne.mockResolvedValue(mockJewel); // Jewel encontrada
+  UsersRepositoryMock.findOne.mockResolvedValue(mockUser);   // Usuário encontrado
+
+  await expect(service.assignJewelToUser('jewel-id', 'user-id')).rejects.toThrow(ForbiddenException);
+  expect(JewelsRepositoryMock.findOne).toHaveBeenCalledWith({
+    where: { uniqueId: 'jewel-id' },
+    relations: ['users'],
+  });
+});
   
     // Teste do método update
     it('should update a jewel', async () => {
