@@ -11,6 +11,10 @@ async function bootstrap() {
 
   const configService = new ConfigService();
 
+  app.setGlobalPrefix('v1/')
+  app.useGlobalPipes(new ValidationPipe())
+
+
   const docConfig = new DocumentBuilder()
   .setTitle('Ecommerce')
   .setDescription('Api for Ecommerce')
@@ -20,8 +24,7 @@ async function bootstrap() {
   const documentFactory = SwaggerModule.createDocument(app, docConfig)
   SwaggerModule.setup('v1/docs', app, documentFactory)
 
-  app.setGlobalPrefix('v1/')
-  app.useGlobalPipes(new ValidationPipe())
+ 
   await app.listen( configService.get('PORT') ||3000);
 }
 bootstrap();
