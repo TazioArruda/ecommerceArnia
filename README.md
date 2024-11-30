@@ -23,7 +23,7 @@ nest new ecommerceArnia
 Foi utilizada uma conexão com o PostgreSQL, configurada com o TypeORM para gerenciar as tabelas e entidades.
 Dependências instaladas:
 bash
-Copiar código
+
 npm install @nestjs/typeorm typeorm pg
 
 # Documentação com Swagger:
@@ -31,7 +31,6 @@ npm install @nestjs/typeorm typeorm pg
 A documentação da API foi implementada com Swagger, permitindo uma interface interativa para testar e explorar as rotas.
 Dependências instaladas:
 bash
-Copiar código
 npm install @nestjs/swagger
 
 # Criação das entidades principais:
@@ -78,3 +77,7 @@ name (string): Nome da joia.
 quantity (int): Quantidade disponível.
 isAvailable (boolean): Indica se a joia está disponível.
 type (string): Tipo de material da joia.
+
+## Diagrama de Relacionamento
+
+[![Diagrama de Relacionamento do Banco de Dados](https://raw.githubusercontent.com/TazioArruda/ecommerceArnia/64a41b9e9c055acf0a4e4baa9b69e97794729f86/Diagrama%20sem%20nome.drawio%20(3).png)
