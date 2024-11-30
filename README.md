@@ -1,6 +1,7 @@
 # Projeto E-commerce
 
 Este é um projeto de API para um sistema de e-commerce desenvolvido com NestJS, utilizando PostgreSQL como banco de dados e TypeORM para integração com o banco. A API possui documentação interativa com Swagger.
+[clique aqui](https://ecommercearnia-production-29a7.up.railway.app/v1/docs)
 
 ## Índice
 
